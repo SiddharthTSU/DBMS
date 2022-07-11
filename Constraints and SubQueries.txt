@@ -1,0 +1,120 @@
+//Primary Key
+
+create table department
+(dept_name  varchar(20) primary key,
+ building varchar(20), budget numeric(15,2));
+
+insert into department values ('cse', 'new' , 200000);
+insert into department values ('etx', 'new' , 250000);
+
+//Foreign key
+
+create table instructor 
+(ID char(5), name varchar(20) not null,
+ dept_name  varchar(20),
+ salary numeric(8,2),
+ primary key (ID),
+ foreign key (dept_name) references department(dept_name) on delete cascade on update cascade)
+
+insert into instructor values ('10211', 'Ram', 'cse', 66000);
+insert into instructor values ('10212', 'Shourya', 'etx', 60000);
+
+select * from department;
+select * from instructor;
+
+//To see effect of on delete cascade and on update cascade 
+
+update department set dept_name='etc' where dept_name='etx';
+
+select * from department;
+select * from instructor;
+
+
+delete from department where dept_name='etc';
+
+select * from department;
+select * from instructor;
+
+create table student (
+        ID    varchar(5),
+        name   varchar(20) not null,
+        dept_name  varchar(20),
+        tot_cred   numeric(3,0) DEFAULT 5.5,
+        primary key (ID),
+        foreign key (dept_name) references department (dept_name));
+
+
+//Setting Default value to column
+
+mysql> ALTER TABLE table_name
+          ALTER column_name SET DEFAULT default_value;
+
+mysql> ALTER TABLE table_name
+          ALTER column_name DROP DEFAULT;
+
+mysql> create table s1 (rn int, class char(4) default 'TY', marks float(4,2));
+Query OK, 0 rows affected, 1 warning (1.26 sec)
+
+
+mysql> insert into s1(rn, marks) values (1,78);
+Query OK, 1 row affected (0.11 sec)
+
+
+mysql> select * from s1;
++------+-------+-------+
+| rn   | class | marks |
++------+-------+-------+
+|    1 | TY    | 78.00 |
++------+-------+-------+
+1 row in set (0.00 sec)
+
+
+//Check Constraint
+
+ create table account1 (accno int, brnm varchar(10), balance numeric(6,1), check(balance>20000));
+
+insert into account1 values (11,"shahupuri", 6000);
+
+ERROR 3819 (HY000): Check constraint 'account1_chk_1' is violated.
+
+
+
+//SubQueries
+
+1. find students having same marks as "Ram"
+select name from student where marks=(select marks from student where name="Ram")
+
+2. Find the marks of students whose names are neither "Ram" or "Aditya"
+select marks from student where name not in("Ram", "Aditya")
+
+select marks from student where name!="Ram" or name!= "Aditya"
+
+
+3. Find the customers who are living insame city as "Ram"
+SELECT customer-name FROM customer WHERE customer-city= (SELECT customer-city FROM customer WHERE customer-name="Ram");
+
+4. Find the branches having asstes greater than at least one branch located in "Kolhapur"
+Select branch-name from branch where assets>some(Select assets from branch where branch-city=“kolhapur”)
+
+
+
+//Update with multiple conditions
+
+Q.Increase students marks by 5% if marks greate than 80 otherwise by 3%
+
+update student
+set marks = case
+when marks <= 80 then marks * 1.05
+else marks * 1.03                                     
+end
+
+
+
+ 
+
+
+
+
+
+
+
